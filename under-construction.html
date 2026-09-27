@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Under Construction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0d;
+    --panel: #141416;
+    --panel-alt: #1a1a1c;
+    --border: #2a2a2d;
+    --border-soft: #232325;
+    --text: #d8d8d9;
+    --text-dim: #7a7a7d;
+    --text-faint: #4a4a4d;
+    --line-no: #3c3c3f;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #0c0c0d; --panel:#141416; --panel-alt:#1a1a1c; --border:#2a2a2d;
+      --border-soft:#232325; --text:#d8d8d9; --text-dim:#7a7a7d; --text-faint:#4a4a4d; --line-no:#3c3c3f;
+    }
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; overflow-x: hidden; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    height: 100%;
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(255,255,255,0.035), transparent 55%);
+  }
+
+  .editor {
+    width: 100%;
+    max-width: 680px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7);
+  }
+
+  /* title bar */
+  .titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--panel-alt);
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; background: #3a3a3d; border: 1px solid #48484b; }
+  .titlebar-name {
+    margin-left: 10px;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+  }
+
+  /* tabs */
+  .tabs {
+    display: flex;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 9px 16px;
+    font-size: 12.5px;
+    color: var(--text-faint);
+    border-right: 1px solid var(--border-soft);
+    white-space: nowrap;
+  }
+  .tab.active {
+    color: var(--text);
+    background: var(--panel-alt);
+    border-top: 2px solid #6b6b6e;
+    padding-top: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .tab-close {
+    color: var(--text-faint);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  /* code body */
+  .code {
+    display: flex;
+    font-size: 13.5px;
+    line-height: 1.85;
+    padding: 22px 0;
+  }
+  .gutter {
+    text-align: right;
+    color: var(--line-no);
+    padding: 0 14px 0 18px;
+    user-select: none;
+    flex-shrink: 0;
+    white-space: pre;
+  }
+  .lines { padding-right: 20px; white-space: pre-wrap; word-break: break-word; }
+  .kw { color: #9a9a9d; }
+  .str { color: #b8b8ba; }
+  .com { color: #55555a; font-style: italic; }
+  .fn { color: #c7c7c9; }
+  .punc { color: #6a6a6d; }
+
+  .msg-block { margin: 10px 0 6px; padding-left: 2px; }
+  .msg-line { color: var(--text); }
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 1em;
+    background: var(--text);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+    margin-left: 1px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* status bar */
+  .statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    background: var(--panel-alt);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+  }
+  .statusbar .left, .statusbar .right { display: flex; gap: 16px; align-items: center; }
+  .progress-track {
+    width: 90px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 20%;
+    background: var(--text-dim);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 480px) {
+    .code { font-size: 12.5px; }
+    .gutter { padding: 0 10px 0 12px; }
+    .statusbar .left span:nth-child(2),
+    .statusbar .left span:nth-child(3) { display: none; }
+  }
+
+  @media (max-width: 360px) {
+    body { padding: 10px; }
+    .titlebar { padding: 8px 10px; gap: 6px; }
+    .dot { width: 9px; height: 9px; }
+    .tab { padding: 7px 9px; font-size: 10.5px; }
+    .tab.active { padding-top: 5px; gap: 8px; }
+    .tab-close { font-size: 15px; }
+    .code { font-size: 10.5px; line-height: 1.75; padding: 16px 0; }
+    .gutter { padding: 0 6px 0 8px; }
+    .lines { padding-right: 10px; }
+    .statusbar { padding: 6px 10px; font-size: 9.5px; }
+    .statusbar .left, .statusbar .right { gap: 8px; }
+    .progress-track { width: 46px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="editor">
+    <div class="titlebar">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab">index.html</div>
+      <div class="tab">style.css</div>
+      <div class="tab active">status.js <span class="tab-close">×</span></div>
+    </div>
+
+    <div class="code">
+      <div class="gutter">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12</div>
+      <div class="lines"><span class="com">// this page is being built</span>
+<span class="kw">const</span> <span class="fn">site</span> = {
+  <span class="punc">status:</span> <span class="str">"under construction"</span>,
+  <span class="punc">progress:</span> <span class="str">"20%"</span>,
+  <span class="punc">eta:</span> <span class="str">"soon"</span><span class="cursor"></span>
+<span class="punc">};</span></div>
+    </div>
+
+    <div class="statusbar">
+      <div class="left">
+        <span>●</span>
+        <span>UTF-8</span>
+        <span>JavaScript</span>
+      </div>
+      <div class="right">
+        <div class="progress-track"><div class="progress-fill"></div></div>
+        <span>Ln 5, Col 14</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
